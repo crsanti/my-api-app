@@ -39,7 +39,6 @@ pipeline {
         BASE_API_URL = "http://$ec2Instance:$appPort"
       }
       steps {
-        sh 'npm ci'
         sh 'npm run test:e2e'
       }
     }
