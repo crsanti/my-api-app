@@ -15,6 +15,7 @@ pipeline {
     stage('Warmup') {
       steps {
         cleanWs()
+        sh 'pwd; ls -l'
         checkout scm
       }
     }
