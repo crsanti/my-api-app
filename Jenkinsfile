@@ -1,10 +1,6 @@
 
 pipeline {
-  agent {
-    docker {
-      image 'node:14-alpine'
-    }
-  }
+  agent any
   options {
     skipDefaultCheckout(true)
   }
@@ -15,12 +11,23 @@ pipeline {
     githubAccount = "crsanti"
     githubRepoName = "my-api-app"
   }
-
   stages {
     stage('Warmup') {
-      steps {
-        cleanWs()
-        checkout scm
+      stages {
+        stage('Clean main workspace') {
+          cleanWs()
+        }
+        stage('Clean docker workspace') {
+          agent docker
+          steps {
+            cleanWs()
+          }
+        }
+        stage('Checkout SCM') {
+          steps {
+            checkout scm
+          }
+        }
       }
     }
     stage('Notify GitHub build in progress') {
@@ -35,11 +42,21 @@ pipeline {
       }
     }
     stage('Install dependencies') {
+      agent {
+        docker {
+          image 'node:14-alpine'
+        }
+      }
       steps {
         sh 'npm ci'
       }
     }
     stage('Tests') {
+      agent {
+        docker {
+          image 'node:14-alpine'
+        }
+      }
       steps {
         sh 'npm test'
       }
@@ -47,6 +64,11 @@ pipeline {
     stage('E2E Tests') {
       when {
         branch 'staging'
+      }
+      agent {
+        docker {
+          image 'node:14-alpine'
+        }
       }
       environment {
         BASE_API_URL = "http://$ec2Instance:$appPort"
@@ -58,6 +80,11 @@ pipeline {
     stage('Build image & push it to DockerHub') {
       when {
         branch 'develop'
+      }
+      agent {
+        docker {
+          image 'node:14-alpine'
+        }
       }
       steps {
         script {
