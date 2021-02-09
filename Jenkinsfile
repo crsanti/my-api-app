@@ -13,6 +13,7 @@ pipeline {
   }
 
   stages {
+    agent any
     stage('Warmup') {
       steps {
         cleanWs()
