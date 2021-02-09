@@ -1,6 +1,9 @@
 
 pipeline {
   agent any
+  options {
+    skipDefaultCheckout(true)
+  }
   environment {
     imageName = 'crsanti/my-api-app:latest'
     ec2Instance = 'ec2-54-170-39-116.eu-west-1.compute.amazonaws.com'
@@ -8,7 +11,14 @@ pipeline {
     githubAccount = "crsanti"
     githubRepoName = "my-api-app"
   }
+
   stages {
+    stage('Warmup') {
+      steps {
+        cleanWs()
+        checkout scm
+      }
+    }
     stage('Notify GitHub build in progress') {
       steps {
         githubNotify(
