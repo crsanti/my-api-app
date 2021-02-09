@@ -13,23 +13,9 @@ pipeline {
   }
   stages {
     stage('Warmup') {
-      stages {
-        stage('Clean main workspace') {
-          steps {
-            cleanWs()
-          }
-        }
-        // stage('Clean docker workspace') {
-        //   agent docker
-        //   steps {
-        //     cleanWs()
-        //   }
-        // }
-        stage('Checkout SCM') {
-          steps {
-            checkout scm
-          }
-        }
+      steps {
+        cleanWs()
+        checkout scm
       }
     }
     stage('Notify GitHub build in progress') {
