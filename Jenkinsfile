@@ -15,7 +15,9 @@ pipeline {
     stage('Warmup') {
       stages {
         stage('Clean main workspace') {
-          cleanWs()
+          steps {
+            cleanWs()
+          }
         }
         // stage('Clean docker workspace') {
         //   agent docker
