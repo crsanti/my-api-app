@@ -17,12 +17,12 @@ pipeline {
         stage('Clean main workspace') {
           cleanWs()
         }
-        stage('Clean docker workspace') {
-          agent docker
-          steps {
-            cleanWs()
-          }
-        }
+        // stage('Clean docker workspace') {
+        //   agent docker
+        //   steps {
+        //     cleanWs()
+        //   }
+        // }
         stage('Checkout SCM') {
           steps {
             checkout scm
@@ -45,6 +45,7 @@ pipeline {
       agent {
         docker {
           image 'node:14-alpine'
+          reuseNode true
         }
       }
       steps {
@@ -55,6 +56,7 @@ pipeline {
       agent {
         docker {
           image 'node:14-alpine'
+          reuseNode true
         }
       }
       steps {
@@ -68,6 +70,7 @@ pipeline {
       agent {
         docker {
           image 'node:14-alpine'
+          reuseNode true
         }
       }
       environment {
@@ -84,6 +87,7 @@ pipeline {
       agent {
         docker {
           image 'node:14-alpine'
+          reuseNode true
         }
       }
       steps {
