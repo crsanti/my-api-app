@@ -1,6 +1,10 @@
 
 pipeline {
-  agent none
+  agent {
+    docker {
+      image 'node:14-alpine'
+    }
+  }
   options {
     skipDefaultCheckout(true)
   }
@@ -13,7 +17,6 @@ pipeline {
   }
 
   stages {
-    agent any
     stage('Warmup') {
       steps {
         cleanWs()
@@ -32,21 +35,11 @@ pipeline {
       }
     }
     stage('Install dependencies') {
-      agent {
-        docker {
-          image 'node:14-alpine'
-        }
-      }
       steps {
         sh 'npm ci'
       }
     }
     stage('Tests') {
-      agent {
-        docker {
-          image 'node:14-alpine'
-        }
-      }
       steps {
         sh 'npm test'
       }
@@ -54,11 +47,6 @@ pipeline {
     stage('E2E Tests') {
       when {
         branch 'staging'
-      }
-      agent {
-        docker {
-          image 'node:14-alpine'
-        }
       }
       environment {
         BASE_API_URL = "http://$ec2Instance:$appPort"
